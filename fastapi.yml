@@ -1,0 +1,35 @@
+#manifest
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapilp-deployment
+spec:
+  selector:
+    matchLabels:
+      app: fastapilp-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fastapilp-server
+    spec:
+      containers:
+      - name: fastapilp-container
+        #image: gcr.io/tensorflow-serving/resnet 
+        image: docker.io/yacruz/fastapimlplap:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: fastapilp-service
+  name: fastapilp-service
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: fastapilp-server
+  type: LoadBalancer
